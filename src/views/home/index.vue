@@ -5,9 +5,10 @@
       <!-- 绑定class方法属性 当collapse为真时,显示class绑定的属性 -->
       <div class="logo" :class="{close: collapse}"></div>
       <!-- :collapse为真时,折叠侧边栏,如果为假展开侧边栏 -->
+      <!-- $route.path当前路由的路径 -->
       <el-menu
         router
-        default-active="/"
+        :default-active="$route.path"
         background-color="#002033"
         text-color="#fff"
         active-text-color="#ffd04b"
