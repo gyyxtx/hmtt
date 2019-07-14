@@ -9,4 +9,7 @@ export default {}
 </script>
 
 <style lang="less" scoped>
+.welcome-container{
+    text-align: center;
+}
 </style>
