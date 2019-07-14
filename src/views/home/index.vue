@@ -48,15 +48,18 @@
       <el-header class="my-header">
         <span class="el-icon-s-fold" @click="changeCollapse()"></span>
         <span class="text">江苏传智播客科技教育有限公司</span>
-        <el-dropdown style="float:right">
+        <el-dropdown style="float:right" @command="handleCommand">
           <span class="el-dropdown-link">
-            <img src="../../assets/images/avatar.jpg" alt />
-            黑马小哥
+            <img :src="avatar" alt />
+            {{name}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-setting">个人设置</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-unlock">退出登录</el-dropdown-item>
+            <!-- click为dom原生事件,而el-dropdown-item并不是原生标签,所以事件并不会生效 -->
+            <!-- <el-dropdown-item icon="el-icon-setting" @click.native="setting">个人设置</el-dropdown-item> -->
+            <el-dropdown-item icon="el-icon-setting" command='setting'>个人设置</el-dropdown-item>
+            <!-- <el-dropdown-item icon="el-icon-unlock" @click.native="logout">退出登录</el-dropdown-item> -->
+            <el-dropdown-item icon="el-icon-unlock" command='logout'>退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-header>
@@ -72,13 +75,35 @@ export default {
   data () {
     return {
       // 设置侧边栏属性
-      collapse: false
+      collapse: false,
+      // 在data中定义两个属性用来接收登录后后台返回的姓名和图片
+      avatar: '',
+      name: ''
     }
+  },
+  created () {
+    // 获取登录后,从后端获取的信息
+    const user = JSON.parse(window.sessionStorage.getItem('mytoken'))
+    // 将图片赋值给avatar,将名字赋值给name
+    this.avatar = user.photo
+    this.name = user.name
   },
   methods: {
     // 设置侧边栏属性值
     changeCollapse: function () {
       this.collapse = !this.collapse
+    },
+    // 点击触发的方法,路由跳转到这支页面
+    setting () {
+      this.$router.push('/setting')
+    },
+    // 点击退出,将清除sessionstorge中的数据清除,跳转回登录页面
+    logout () {
+      window.sessionStorage.removeItem('mytoken')
+      this.$router.push('/login')
+    },
+    handleCommand (command) {
+      this[command]()
     }
   }
 }

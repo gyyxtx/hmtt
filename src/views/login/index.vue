@@ -23,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     // 表单自定义验证
@@ -44,7 +45,8 @@ export default {
           { required: true, message: '请输入手机号码', trigger: 'blur' },
           { validator: checkmobile, trigger: 'blur' }
         ],
-        code: [{ required: true, message: '请输入验证码', trigger: 'blur' },
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
           { len: 6, message: '请输入6位有效数字', trigger: 'blur' }
         ]
       }
@@ -53,27 +55,44 @@ export default {
   methods: {
     // 整体表单请求
     login () {
-      this.$refs.loginForm.validate((valid) => {
-        // 如果请求成功,发送请求,跳转至首页
+      // this.$refs.loginForm.validate(valid => {
+      //   // 如果请求成功,发送请求,跳转至首页
+      //   if (valid) {
+      //     // 提交登录请求 axios是基于primise封装的post() 返回值是promise对象
+      //     this.$http
+      //       .post(`authorizations`, this.loginForm)
+      //       .then(res => {
+      //         // 1.跳转至首页
+      //         this.$router.push('/')
+      //         // 2.保存用户信息  用来判断登录状态
+      //         // console.log(res.data.data.token)
+      //         // sessionStorage是DOM对象,全局对象,挂载在window下,作用是保存数据,关闭浏览器后失效
+      //         // sessionStorage.setItem(key,value)存储数据
+      //         // sessionStorage.getItem(key)获取数据
+      //         // sessionStorage.remove(Itemkey)删除数据
+      //         // sessionStorage.clear() 清空所有数据
+      //         window.sessionStorage.setItem(
+      //           'mytoken',
+      //           JSON.stringify(res.data.data)
+      //         )
+      //       })
+      //       .catch(() => {
+      //         this.$message.error('手机号或者验证码错误')
+      //       })
+      //   }
+      // })
+      // 使用axios结合asnyc与await使用  以及js语法处理异常
+      this.$refs.loginForm.validate(async valid => {
         if (valid) {
-          // 提交登录请求 axios是基于primise封装的post() 返回值是promise对象
-          this.$http
-            .post(`authorizations`, this.loginForm)
-            .then(res => {
-              // 1.跳转至首页
-              this.$router.push('/')
-              // 2.保存用户信息  用来判断登录状态
-              // console.log(res.data.data.token)
-              // sessionStorage是DOM对象,全局对象,挂载在window下,作用是保存数据,关闭浏览器后失效
-              // sessionStorage.setItem(key,value)存储数据
-              // sessionStorage.getItem(key)获取数据
-              // sessionStorage.remove(Itemkey)删除数据
-              // sessionStorage.clear() 清空所有数据
-              window.sessionStorage.setItem('mytoken', JSON.stringify(res.data.data))
-            })
-            .catch(() => {
-              this.$message.error('手机号或者验证码错误')
-            })
+          // 发送请求,res为返回结果值
+          // try为返回的是正确的结果  catch为返回的错误结果 js语法 捕获异常
+          try {
+            const res = await this.$http.post(`authorizations`, this.loginForm)
+            window.sessionStorage.setItem('mytoken', JSON.stringify(res.data.data))
+            this.$router.push('/')
+          } catch (err) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }
