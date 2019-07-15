@@ -6,7 +6,9 @@
 </template>
 
 <script>
-export default {}
+export default {
+  name: 'my-bread'
+}
 </script>
 
 <style lang="less" scoped>

@@ -4,7 +4,11 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from '@/router'
 import axios from '@/api/axios'
+// 导入组件
+import components from '@/components'
 Vue.prototype.$http = axios
+// 注册组件
+Vue.use(components)
 
 Vue.use(ElementUI)
 

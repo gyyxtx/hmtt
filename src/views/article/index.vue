@@ -7,7 +7,7 @@
         <my-bread>内容管理</my-bread>
       </div>
       <!-- 筛选项 reqParams提交的参数 -->
-      <el-form :model="reqParams">
+      <el-form :model="reqParams" label-width="50px">
         <el-form-item label="状态:">
             <el-radio-group v-model="reqParams.status">
               <el-radio :label="null">全部</el-radio>
@@ -35,6 +35,9 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
             ></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary">筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
