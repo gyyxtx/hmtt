@@ -4,10 +4,7 @@
     <el-card>
       <div slot="header">
         <!-- 面包屑导航 -->
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>内容管理</el-breadcrumb-item>
-        </el-breadcrumb>
+        <my-bread>内容管理</my-bread>
       </div>
       <!-- 筛选项 reqParams提交的参数 -->
       <el-form :model="reqParams">
@@ -42,18 +39,20 @@
       </el-form>
     </el-card>
     <!-- 筛选结果区域 -->
-    <el-card>
+    <!-- <el-card>
         <my-test>
-            <!-- scope收集了该插槽上所有的自定义属性的数据  scope是一个对象,包含插槽上所有的数据 -->
+            scope收集了该插槽上所有的自定义属性的数据  scope是一个对象,包含插槽上所有的数据
             <template slot="content" slot-scope="scope">内容1{{scope.text}}</template>
             <template slot="footer">底部1</template>
         </my-test>
-    </el-card>
+    </el-card> -->
+    <el-card></el-card>
   </div>
 </template>
 
 <script>
-import myTest from '@/components/mytest.vue'
+import myBread from '@/components/my-bread.vue'
+// import myTest from '@/components/mytest.vue'
 export default {
   data () {
     return {
@@ -70,7 +69,8 @@ export default {
     }
   },
   components: {
-    myTest
+    // myTest
+    myBread
   }
 }
 </script>
