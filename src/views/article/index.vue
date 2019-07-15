@@ -42,11 +42,18 @@
       </el-form>
     </el-card>
     <!-- 筛选结果区域 -->
-    <el-card></el-card>
+    <el-card>
+        <my-test>
+            <!-- scope收集了该插槽上所有的自定义属性的数据  scope是一个对象,包含插槽上所有的数据 -->
+            <template slot="content" slot-scope="scope">内容1{{scope.text}}</template>
+            <template slot="footer">底部1</template>
+        </my-test>
+    </el-card>
   </div>
 </template>
 
 <script>
+import myTest from '@/components/mytest.vue'
 export default {
   data () {
     return {
@@ -61,6 +68,9 @@ export default {
       //  日期数据
       dateValues: []
     }
+  },
+  components: {
+    myTest
   }
 }
 </script>
