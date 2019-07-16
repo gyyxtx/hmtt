@@ -74,6 +74,18 @@ export default {
   components: {
     // myTest
     myBread
+  },
+  created () {
+    this.getChannelOption()
+  },
+  methods: {
+    async getChannelOption () {
+      // 解构赋值  {data:{data}}=res     res=data.data
+      const { data: { data: { channels } } } = await this.$http.get('channels')
+      // console.log(res)
+      // this.channelOptions = res.data.data.channels
+      this.channelOptions = channels
+    }
   }
 }
 </script>
