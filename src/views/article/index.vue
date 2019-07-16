@@ -83,7 +83,7 @@
            <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="prev, pager, next" :total="1000">
+      <el-pagination background layout="prev, pager, next" :total="total" @current-page="reqParams.page" :page-size="reqParams.per_page">
       </el-pagination>
     </el-card>
   </div>
@@ -98,14 +98,17 @@ export default {
         status: null,
         channel_id: null,
         begin_pubdate: null,
-        end_pubdate: null
+        end_pubdate: null,
+        page: 1,
+        per_page: 10
       },
       //  频道选项组数据
       channelOptions: [],
       //  日期数据
       dateValues: [],
       // 获取文章列表
-      articles: []
+      articles: [],
+      total: 0
     }
   },
   components: {
@@ -116,8 +119,14 @@ export default {
     this.getArticles()
   },
   methods: {
+    // 分页
+    pager (newPage) {
+      this.reqParams.page = newPage
+      this.getArticles()
+    },
     //  筛选 点击筛选重新调用获取文章
     search () {
+      this.reqParams.page = 1
       this.getArticles()
     },
     // 监听时间变化 此方法获取事件只能是标准格式,并非我们想要的格式,所以需要借助element-ui提供的方法进行格式化
@@ -139,6 +148,7 @@ export default {
       const { data: { data } } = await this.$http.get('articles', { params: this.reqParams })
       // console.log(data)
       this.articles = data.results
+      this.total = data.total_count
     }
   }
 }
