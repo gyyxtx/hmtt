@@ -29,6 +29,8 @@
         </el-form-item>
         <el-form-item label="时间:">
           <el-date-picker
+          value-format="yyyy-MM-dd"
+          @change="changeData"
             v-model="dateValues"
             type="daterange"
             range-separator="至"
@@ -37,7 +39,7 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">筛选</el-button>
+          <el-button type="primary" @click="search()">筛选</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -114,6 +116,15 @@ export default {
     this.getArticles()
   },
   methods: {
+    //  筛选 点击筛选重新调用获取文章
+    search () {
+      this.getArticles()
+    },
+    // 监听时间变化 此方法获取事件只能是标准格式,并非我们想要的格式,所以需要借助element-ui提供的方法进行格式化
+    changeData (values) {
+      this.reqParams.begin_pubdate = values[0]
+      this.reqParams.end_pubdate = values[1]
+    },
     // 获取频道下拉菜单
     async getChannelOption () {
       // 解构赋值  {data:{data}}=res     res=data.data
