@@ -55,11 +55,31 @@
         <b>0</b> 条结果：
       </div>
       <el-table :data="articles">
-        <el-table-column label="封面"></el-table-column>
-        <el-table-column label="标题"></el-table-column>
-        <el-table-column label="状态"></el-table-column>
-        <el-table-column label="发布时间"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="封面">
+          <template slot-scope='scope'>
+            <el-image :src="scope.row.cover.images[0]" style="width:100px;height:75px">
+              <div slot="error" class="image-slot">
+                <img src="../../assets/images/error.gif" alt="" width=100 height=75>
+              </div>
+            </el-image>
+
+          </template>
+        </el-table-column>
+        <el-table-column label="标题" prop="title"></el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status==1">待审核</el-tag>
+            <el-tag type="success" v-if="scope.row.status==2">审核通过</el-tag>
+            <el-tag type="info" v-if="scope.row.status==0">草稿</el-tag>
+            <el-tag type="warning" v-if="scope.row.status==3">审核失败</el-tag>
+            <el-tag type="danger" v-if="scope.row.status==4">已删除</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="发布时间" prop="pubdate"></el-table-column>
+        <el-table-column label="操作">
+           <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
+           <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
+        </el-table-column>
       </el-table>
       <el-pagination background layout="prev, pager, next" :total="1000">
       </el-pagination>
@@ -76,13 +96,14 @@ export default {
         status: null,
         channel_id: null,
         begin_pubdate: null,
-        end_pubdate: null,
-        articles: []
+        end_pubdate: null
       },
       //  频道选项组数据
       channelOptions: [],
       //  日期数据
-      dateValues: []
+      dateValues: [],
+      // 获取文章列表
+      articles: []
     }
   },
   components: {
@@ -90,18 +111,23 @@ export default {
   },
   created () {
     this.getChannelOption()
+    this.getArticles()
   },
   methods: {
+    // 获取频道下拉菜单
     async getChannelOption () {
       // 解构赋值  {data:{data}}=res     res=data.data
-      const {
-        data: {
-          data: { channels }
-        }
-      } = await this.$http.get('channels')
+      const { data: { data: { channels } } } = await this.$http.get('channels')
       // console.log(res)
       // this.channelOptions = res.data.data.channels
       this.channelOptions = channels
+    },
+    // 获取列表数据
+    async getArticles () {
+      // params为固定,axios提供的属性,可以直接得到数据
+      const { data: { data } } = await this.$http.get('articles', { params: this.reqParams })
+      // console.log(data)
+      this.articles = data.results
     }
   }
 }

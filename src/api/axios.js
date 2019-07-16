@@ -16,8 +16,8 @@ instance.interceptors.request.use(config => {
   const user = window.sessionStorage.getItem('mytoken')
   //  如果有token就加请求头信息
   if (user) {
-    config.header = {
-      Authorization: 'Bearer' + JSON.parse(user).token
+    config.headers = {
+      Authorization: 'Bearer ' + JSON.parse(user).token
     }
   }
   return config
@@ -27,7 +27,7 @@ instance.interceptors.request.use(config => {
 })
 // 添加相应拦截器
 instance.interceptors.response.use(response => response, error => {
-  if (error.response.status === 401) {
+  if (error.response && error.response.status === 401) {
     location.hash = '#/login'
   }
   return Promise.reject(error)

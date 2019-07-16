@@ -36,8 +36,8 @@ export default {
     }
     return {
       loginForm: {
-        mobile: '',
-        code: ''
+        mobile: '13812123366',
+        code: '246810'
       },
       // 表单验证
       loginRules: {
