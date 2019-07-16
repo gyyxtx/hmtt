@@ -81,7 +81,7 @@
         <el-table-column label="发布时间" prop="pubdate"></el-table-column>
         <el-table-column label="操作">
            <template slot-scope="scope">
-              <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
+              <el-button type="primary" @click="edit(scope.row.id)" icon="el-icon-edit" circle plain></el-button>
               <el-button type="danger" @click="del(scope.row.id)" icon="el-icon-delete" circle plain></el-button>
            </template>
         </el-table-column>
@@ -123,6 +123,10 @@ export default {
     this.getArticles()
   },
   methods: {
+    // 编辑功能的实现
+    edit (id) {
+      this.$router.push(`/publish?id=${id}`)
+    },
     // 删除功能实现
     del (id) {
       this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
