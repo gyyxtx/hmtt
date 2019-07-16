@@ -70,6 +70,7 @@
         <el-table-column label="标题" prop="title"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
+          {{scope.row.id}}
             <el-tag v-if="scope.row.status==1">待审核</el-tag>
             <el-tag type="success" v-if="scope.row.status==2">审核通过</el-tag>
             <el-tag type="info" v-if="scope.row.status==0">草稿</el-tag>
@@ -79,8 +80,10 @@
         </el-table-column>
         <el-table-column label="发布时间" prop="pubdate"></el-table-column>
         <el-table-column label="操作">
-           <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
-           <el-button type="danger" icon="el-icon-delete" circle plain></el-button>
+           <template slot-scope="scope">
+              <el-button type="primary" icon="el-icon-edit" circle plain></el-button>
+              <el-button type="danger" @click="del(scope.row.id)" icon="el-icon-delete" circle plain></el-button>
+           </template>
         </el-table-column>
       </el-table>
       <el-pagination background layout="prev, pager, next" :total="total" @current-page="reqParams.page" :page-size="reqParams.per_page">
@@ -90,6 +93,7 @@
 </template>
 
 <script>
+
 // import myTest from '@/components/mytest.vue'
 export default {
   data () {
@@ -119,6 +123,20 @@ export default {
     this.getArticles()
   },
   methods: {
+    // 删除功能实现
+    del (id) {
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        await this.$http.delete(`articles/${id}`)
+        // 删除成功
+        this.$message.success('删除成功')
+        this.getArticles()
+      })
+        .catch(() => {})
+    },
     // 分页
     pager (newPage) {
       this.reqParams.page = newPage

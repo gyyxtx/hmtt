@@ -1,9 +1,18 @@
 // 封装axios
 import axios from 'axios'
+import JSONBig from 'json-bigint'
 // 配置全局axios
 const instance = axios.create({
   // 基准路径
-  baseURL: 'http://ttapi.research.itcast.cn/mp/v1_0/'
+  baseURL: 'http://ttapi.research.itcast.cn/mp/v1_0/',
+  transformResponse: [(data) => {
+    // 对data进行任意转换处理
+    // data应该是null使用JSONBig转换null会出现异常
+    if (data) {
+      return JSONBig.parse(data)
+    }
+    return data
+  }]
   // token认证
 //   herders: {
 //     Authorization: 'Bearer' + JSON.parse(window.sessionStorage.getItem('mytoken'))
