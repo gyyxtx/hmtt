@@ -54,7 +54,7 @@
     <el-card>
       <div slot="header">
         根据筛选条件共查询到
-        <b>0</b> 条结果：
+        <b>{{total}}</b> 条结果：
       </div>
       <el-table :data="articles">
         <el-table-column label="封面">
@@ -70,7 +70,6 @@
         <el-table-column label="标题" prop="title"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-          {{scope.row.id}}
             <el-tag v-if="scope.row.status==1">待审核</el-tag>
             <el-tag type="success" v-if="scope.row.status==2">审核通过</el-tag>
             <el-tag type="info" v-if="scope.row.status==0">草稿</el-tag>
