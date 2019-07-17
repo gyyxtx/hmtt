@@ -17,15 +17,10 @@
             <el-radio :label="3">审核失败</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- 频道列表 -->
         <el-form-item label="频道:">
-          <el-select v-model="reqParams.channel_id" placeholder="请选择">
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <!-- 子组件绑定v-model 相当于绑定v-bind绑定vlaue值和v-on 绑定input事件  value是相当于父传子  input事件相当于子传父 -->
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label="时间:">
           <el-date-picker
@@ -106,8 +101,6 @@ export default {
         page: 1,
         per_page: 20
       },
-      //  频道选项组数据
-      channelOptions: [],
       //  日期数据
       dateValues: [],
       // 获取文章列表
@@ -119,7 +112,6 @@ export default {
     // myTest
   },
   created () {
-    this.getChannelOption()
     this.getArticles()
   },
   methods: {
@@ -158,14 +150,6 @@ export default {
       // 起始时间和终止时间
       this.reqParams.begin_pubdate = values[0]
       this.reqParams.end_pubdate = values[1]
-    },
-    // 获取频道下拉菜单
-    async getChannelOption () {
-      // 解构赋值  {data:{data}}=res     res=data.data
-      const { data: { data: { channels } } } = await this.$http.get('channels')
-      // console.log(res)
-      // this.channelOptions = res.data.data.channels
-      this.channelOptions = channels
     },
     // 获取列表数据
     async getArticles () {
