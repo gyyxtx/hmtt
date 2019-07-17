@@ -54,7 +54,7 @@
     <el-card>
       <div slot="header">
         根据筛选条件共查询到
-        <b>0</b> 条结果：
+        <b>{{total}}</b> 条结果：
       </div>
       <el-table :data="articles">
         <el-table-column label="封面">
@@ -70,7 +70,6 @@
         <el-table-column label="标题" prop="title"></el-table-column>
         <el-table-column label="状态">
           <template slot-scope="scope">
-          {{scope.row.id}}
             <el-tag v-if="scope.row.status==1">待审核</el-tag>
             <el-tag type="success" v-if="scope.row.status==2">审核通过</el-tag>
             <el-tag type="info" v-if="scope.row.status==0">草稿</el-tag>
@@ -86,7 +85,8 @@
            </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="prev, pager, next" :total="total" @current-page="reqParams.page" :page-size="reqParams.per_page">
+      <!-- current-change页码发生改变触发的事件 current-page:当前页 -->
+      <el-pagination background layout="prev, pager, next" :total="total" @current-change="pager" :current-page="reqParams.page" :page-size="reqParams.per_page">
       </el-pagination>
     </el-card>
   </div>
@@ -104,7 +104,7 @@ export default {
         begin_pubdate: null,
         end_pubdate: null,
         page: 1,
-        per_page: 10
+        per_page: 20
       },
       //  频道选项组数据
       channelOptions: [],
@@ -141,18 +141,21 @@ export default {
       })
         .catch(() => {})
     },
-    // 分页
+    // 分页  当页码发生改变,将当前页码数赋值给reqParams.page,向后端重新获取数据
     pager (newPage) {
+      // console.log(124)
       this.reqParams.page = newPage
       this.getArticles()
     },
     //  筛选 点击筛选重新调用获取文章
     search () {
+      // 每次搜索,让页面默认显示第一页
       this.reqParams.page = 1
       this.getArticles()
     },
     // 监听时间变化 此方法获取事件只能是标准格式,并非我们想要的格式,所以需要借助element-ui提供的方法进行格式化
     changeData (values) {
+      // 起始时间和终止时间
       this.reqParams.begin_pubdate = values[0]
       this.reqParams.end_pubdate = values[1]
     },
@@ -170,6 +173,7 @@ export default {
       const { data: { data } } = await this.$http.get('articles', { params: this.reqParams })
       // console.log(data)
       this.articles = data.results
+      // 获取表单的总页数
       this.total = data.total_count
     }
   }
