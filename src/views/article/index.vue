@@ -17,15 +17,10 @@
             <el-radio :label="3">审核失败</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- 频道列表 -->
         <el-form-item label="频道:">
-          <el-select v-model="reqParams.channel_id" placeholder="请选择">
-            <el-option
-              v-for="item in channelOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
+          <!-- 子组件绑定v-model 相当于绑定v-bind绑定vlaue值和v-on 绑定input事件  value是相当于父传子  input事件相当于子传父 -->
+          <my-channel v-model="reqParams.channel_id"></my-channel>
         </el-form-item>
         <el-form-item label="时间:">
           <el-date-picker
@@ -85,7 +80,8 @@
            </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="prev, pager, next" :total="total" @current-page="reqParams.page" :page-size="reqParams.per_page">
+      <!-- current-change页码发生改变触发的事件 current-page:当前页 -->
+      <el-pagination background layout="prev, pager, next" :total="total" @current-change="pager" :current-page="reqParams.page" :page-size="reqParams.per_page">
       </el-pagination>
     </el-card>
   </div>
@@ -103,10 +99,8 @@ export default {
         begin_pubdate: null,
         end_pubdate: null,
         page: 1,
-        per_page: 10
+        per_page: 20
       },
-      //  频道选项组数据
-      channelOptions: [],
       //  日期数据
       dateValues: [],
       // 获取文章列表
@@ -118,7 +112,6 @@ export default {
     // myTest
   },
   created () {
-    this.getChannelOption()
     this.getArticles()
   },
   methods: {
@@ -140,28 +133,23 @@ export default {
       })
         .catch(() => {})
     },
-    // 分页
+    // 分页  当页码发生改变,将当前页码数赋值给reqParams.page,向后端重新获取数据
     pager (newPage) {
+      // console.log(124)
       this.reqParams.page = newPage
       this.getArticles()
     },
     //  筛选 点击筛选重新调用获取文章
     search () {
+      // 每次搜索,让页面默认显示第一页
       this.reqParams.page = 1
       this.getArticles()
     },
     // 监听时间变化 此方法获取事件只能是标准格式,并非我们想要的格式,所以需要借助element-ui提供的方法进行格式化
     changeData (values) {
+      // 起始时间和终止时间
       this.reqParams.begin_pubdate = values[0]
       this.reqParams.end_pubdate = values[1]
-    },
-    // 获取频道下拉菜单
-    async getChannelOption () {
-      // 解构赋值  {data:{data}}=res     res=data.data
-      const { data: { data: { channels } } } = await this.$http.get('channels')
-      // console.log(res)
-      // this.channelOptions = res.data.data.channels
-      this.channelOptions = channels
     },
     // 获取列表数据
     async getArticles () {
@@ -169,6 +157,7 @@ export default {
       const { data: { data } } = await this.$http.get('articles', { params: this.reqParams })
       // console.log(data)
       this.articles = data.results
+      // 获取表单的总页数
       this.total = data.total_count
     }
   }
