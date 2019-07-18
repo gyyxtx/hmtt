@@ -8,7 +8,9 @@
                 <el-form-item label="标题:">
                     <el-input style="width:400px" v-model="publishForm.title"></el-input>
                 </el-form-item>
-                <el-form-item label="内容:" :model="publishForm.content">富文本编辑器</el-form-item>
+                <el-form-item label="内容:">
+                    <quill-editor v-model="publishForm.content"></quill-editor>
+                </el-form-item>
                 <el-form-item label="封面:">
                     <el-radio-group v-model="publishForm.cover.type">
                         <el-radio :label="1">单图</el-radio>
@@ -31,7 +33,13 @@
 </template>
 
 <script>
+// 导入quill相关文件
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 export default {
+  components: { quillEditor },
   data () {
     return {
       publishForm: {
