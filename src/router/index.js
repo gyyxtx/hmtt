@@ -8,6 +8,7 @@ import Welcome from '@/views/welcome'
 import Error from '@/views/404'
 import Article from '@/views/article'
 import Image from '@/views/image'
+import Publish from '@/views/publish'
 Vue.use(VueRouter)
 const router = new VueRouter({
   routes: [
@@ -17,10 +18,10 @@ const router = new VueRouter({
       children: [
         { name: 'welcome', path: '/', component: Welcome },
         { name: 'article', path: '/article', component: Article },
-        { name: 'image', path: '/image', component: Image }
+        { name: 'image', path: '/image', component: Image },
+        { name: 'publish', path: '/publish', component: Publish }
       ] },
-    { name: '404', path: '*', component: Error }
-  ]
+    { name: '404', path: '*', component: Error }]
 })
 
 // 设置全局前置守卫
@@ -35,5 +36,4 @@ router.beforeEach((to, from, next) => {
   if (user) return next()
   next('/login')
 })
-
 export default router
