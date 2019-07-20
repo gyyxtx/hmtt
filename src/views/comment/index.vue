@@ -18,8 +18,8 @@
         <!-- 操作与状态相反 -->
         <el-table-column label="操作" width="120">
             <template slot-scope="scope">
-                <el-button v-if="!scope.row.comment_status" type="success" size="mini">打开评论</el-button>
-                <el-button v-else type="danger" size="mini">关闭评论</el-button>
+                <el-button v-if="!scope.row.comment_status" type="success" size="mini" @click="changestatus(scope.row)">打开评论</el-button>
+                <el-button v-else type="danger" size="mini" @click="changestatus(scope.row)">关闭评论</el-button>
             </template>
         </el-table-column>
       </el-table>
@@ -47,6 +47,24 @@ export default {
     this.getdata()
   },
   methods: {
+    //   改变评论状态
+    changestatus (result) {
+      const text1 = ' 您确定关闭评论吗? '
+      const text2 = ' 您确定开启评论吗? '
+      this.$confirm(result.comment_status ? text1 : text2, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        //   发送请求,修改状态
+        const { data: { data } } = await this.$http.put('comments/status?article_id=' + result.id, { allow_comment: !result.comment_status })
+        // 提示修改信息成功
+        this.$message.success('修改评论状态成功')
+        // 将最新状态赋值给comment_status,实现数据驱动视图更新
+        result.comment_status = data.allow_comment
+      })
+        .catch(() => {})
+    },
     //   分页回调函数,默认传参为新的页数
     changepage (newpage) {
       // 将切换的页数赋值给当前页
