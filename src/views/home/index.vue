@@ -96,6 +96,10 @@ export default {
       // 将setting传递的新的用户名,赋值给当前用户名
       this.name = name
     })
+    eventBus.$on('updataPhoto', (photo) => {
+      // 将setting更新的用户头像,赋值给当前页的用户头像(非父子之间的传值)
+      this.avatar = photo
+    })
   },
   methods: {
     // 设置侧边栏属性值

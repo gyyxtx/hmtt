@@ -28,9 +28,9 @@
                 <el-col :span="12">
                     <el-upload
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
                         :show-file-list="false"
-                        :on-success="handleSuccess">
+                        action=""
+                        :http-request="updataImg">
                         <img v-if="settingForm.photo" :src="settingForm.photo" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -54,6 +54,9 @@ export default {
         photo: null,
         email: null,
         mobile: null
+      },
+      headers: {
+        Authorization: 'Bearer ' + JSON.parse(window.sessionStorage.getItem('mytoken')).token
       }
     }
   },
@@ -62,6 +65,35 @@ export default {
     this.getData()
   },
   methods: {
+    // 修改用户头像
+    updataImg (data) {
+      // 自定义方法默认传参,data为上传文件的相关数据
+      console.log(data)
+      // 利用formdata方式向后端传递参数
+      const formData = new FormData()
+      formData.append('photo', data.file)
+      this.$http.patch('user/photo', formData)
+        .then((res) => {
+          // 修改成功后将更新的图片地址复制给表单中的photo
+          const url = res.data.data.photo
+          // 提示修改信息成功
+          this.$message.success('修改头像成功')
+          this.settingForm.photo = url
+          // 更新home中的用户图片
+          eventBus.$emit('updataPhoto', url)
+          // 更新本地存储的用户头像
+          const userInfo = JSON.parse(window.sessionStorage.getItem('mytoken'))
+          // console.log(userInfo)
+          // 将更新过的图片路径赋值给本地存储的token值
+          userInfo.photo = url
+          // 然后更新token
+          window.sessionStorage.setItem('mytoken', JSON.stringify(userInfo))
+        })
+    },
+    // handleSuccess (res) {
+    //   // 报错METHOD NOT ALLOWED 插件默认的修改方式为post,而后端给的请求方式为patch,所以需要根据文档,自己定义请求参数   http-request覆盖默认的上传行为，可以自定义上传的实现
+    //   this.settingForm.photo = res.data.photo
+    // },
     //   修改用户信息
     async updataUserInfo () {
       const { data: { data } } = await this.$http.patch('user/profile',
