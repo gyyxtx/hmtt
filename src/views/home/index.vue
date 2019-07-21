@@ -72,6 +72,7 @@
 </template>
 
 <script>
+import eventBus from '@/eventBus'
 export default {
   data () {
     return {
@@ -88,6 +89,13 @@ export default {
     // 将图片赋值给avatar,将名字赋值给name
     this.avatar = user.photo
     this.name = user.name
+    // 根据个人设置页面更新,此处也跟随更新,非父子之间传值,通过eventBus
+    // 通过事件总线,绑定事件,并由setting组件触发回调函数
+    // name为setting传递的形参
+    eventBus.$on('updataName', (name) => {
+      // 将setting传递的新的用户名,赋值给当前用户名
+      this.name = name
+    })
   },
   methods: {
     // 设置侧边栏属性值

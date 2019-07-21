@@ -20,7 +20,7 @@
                             <el-input v-model="settingForm.email"></el-input>
                         </el-form-item>
                         <el-form-item>
-                            <el-button type="primary">保存设置</el-button>
+                            <el-button type="primary" @click="updataUserInfo">保存设置</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import eventBus from '@/eventBus'
 export default {
   data () {
     return {
@@ -61,6 +62,23 @@ export default {
     this.getData()
   },
   methods: {
+    //   修改用户信息
+    async updataUserInfo () {
+      const { data: { data } } = await this.$http.patch('user/profile',
+        { name: this.settingForm.name,
+          intro: this.settingForm.intro,
+          email: this.settingForm.email })
+      this.$message.success('修改用户信息成功')
+      //   传当前修改的用户名给home  修改home组件的数据 由于是设置界面传值给home,所以是设置界面触发事件  home界面绑定事件
+      eventBus.$emit('updataName', data.name)
+      // 更新本地存储数据
+      const userInfo = JSON.parse(window.sessionStorage.getItem('mytoken'))
+      // console.log(userInfo)
+      // 将更新过的name值赋值给token的name,实现本地的更新
+      userInfo.name = data.name
+      // 将更新name值之后,在重新设置token
+      window.sessionStorage.setItem('mytoken', JSON.stringify(userInfo))
+    },
     //   获取用户个人资料
     async getData () {
       const { data: { data } } = await this.$http.get('user/profile')
