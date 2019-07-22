@@ -14,17 +14,21 @@
           </div>
           <el-pagination background layout="prev, pager, next" :page-size="reqParams.per_page" :current-page="reqParams.page" :total="total" @current-change="changepage"></el-pagination>
         </el-tab-pane>
-        <el-tab-pane label="粉丝画像" name="fansPhoto">粉丝画像</el-tab-pane>
+        <el-tab-pane label="粉丝画像" name="fansPhoto">
+          <!-- 准备容器,放图表 -->
+          <div style="width: 600px;height:400px;" ref="bar"></div>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
 </template>
 
 <script>
+import Echarts from 'echarts'
 export default {
   data () {
     return {
-      activeName: 'fanslist',
+      activeName: 'fansPhoto',
       reqParams: {
         page: 1,
         per_page: 20
@@ -36,7 +40,58 @@ export default {
   created () {
     this.getData()
   },
+  mounted () {
+    // 当钩子函数执行到mounted是才加载完dom元素
+    this.drawChart()
+  },
   methods: {
+    // 回执图标
+    drawChart () {
+      // 获取DOM
+      const dom = this.$refs.bar
+      // 初始化echarts
+      const myEcharts = Echarts.init(dom)
+      // 准备配置项和数据:配置项依赖文档 数据依赖后台 配置选项参考所需图标的配置
+      const option = {
+        color: ['#3398DB'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {// 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'// 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '直接访问',
+            type: 'bar',
+            barWidth: '60%',
+            data: [10, 52, 200, 334, 390, 330, 220]
+          }
+        ]
+      }
+      // 使用配置和数据
+      myEcharts.setOption(option)
+    },
     // 分页
     changepage (newpage) {
       // 将新的页码赋值给page
